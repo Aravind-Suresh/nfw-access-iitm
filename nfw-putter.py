@@ -17,14 +17,15 @@ chromeDriverPath = 'https://sites.google.com/a/chromium.org/chromedriver/downloa
 
 def writeCredentials(outFilePath, data):
     """
-        Method to write credentials to data file
+    Method to write credentials to data file
     """
     json.dump(data, open(outFilePath, 'w'))
 
 def readCredentials(homePath, outFilePath):
     """
-        Method to read credentials from data file.
-        If data file doesn't exist, gets info & creates it.
+    Method to read credentials from data file.
+
+    If data file doesn't exist, gets info & creates it.
     """
     cred = {}
     browserAttr = ['Chrome', 'Firefox']
@@ -37,9 +38,10 @@ def readCredentials(homePath, outFilePath):
             if c in [1, 2]:
                 cred['browser'] = {}
                 cred['browser']['name'] = browserAttr[c-1]
-                if c == 1:
+                if c == 1: # Chrome
                     while True:
                         try:
+                            # Checks if /path/to/chromedriver exists in credentials
                             driverPath = cred['browser'].get('driverPath', None)
                             if driverPath is None:
                                 driver = webdriver.Chrome()
@@ -47,6 +49,7 @@ def readCredentials(homePath, outFilePath):
                                 driver = webdriver.Chrome(driverPath)
                             break
                         except:
+                            # Makes sure user downloads chromedriver & puts in appropriate location
                             print('Chrome driver needs to be installed. It can be installed from here: {}.'.format(chromeDriverPath))
                             print('NOTE: Chrome version must be >= 51.0.2704.0')
                             raw_input('Place it in {} & continue..'.format(basePath))
@@ -61,6 +64,9 @@ def readCredentials(homePath, outFilePath):
     return cred
 
 def auth(driver, cred):
+    """
+    Method for automating login procedure
+    """
     ele_un = driver.find_element_by_xpath("//input[@id='ft_un']")
     ele_un.send_keys(cred['username'])
     ele_pd = driver.find_element_by_xpath("//input[@id='ft_pd']")
@@ -68,6 +74,9 @@ def auth(driver, cred):
     driver.find_element_by_xpath("//input[@type='submit']").click()
 
 def main():
+    """
+    The expected 'main()' function :)
+    """
     cred = readCredentials(homePath, outFilePath)
 
     driver = webdriver.__getattribute__(cred['browser']['name'])()
